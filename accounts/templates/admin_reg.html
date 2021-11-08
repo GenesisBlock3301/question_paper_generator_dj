@@ -1,15 +1,13 @@
 {% extends 'base.html' %} {% block content %}
-
-<div id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="margin-top: 100px; height: 100vh;">
+<div id="login" tabindex="-1" role="dialog" style="margin-top: 100px;height: 100vh;" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-
             <div class="modal-body customer-box">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs">
-                    <li><a>Login</a></li>
+                    <li><a>Registration</a></li>
                 </ul>
-
+                <!-- Tab panes -->
                 <div class="tab-pane" id="Registration">
                     <form role="form" class="form-horizontal">
                         <div class="form-group">
@@ -35,16 +33,15 @@
                         <div class="row">
                             <div class="col-sm-10">
                                 <button type="submit" class="btn btn-light btn-radius btn-brd grd1">
-                    Submit
-                  </button>
-                                <a class="for-pwd" href="javascript:;">Forgot your password?</a
-                  >
+                  Submit
+                </button>
+                                <a class="for-pwd" href="javascript:;">Forgot your password?</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-              </div>
-          </form>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock content %}

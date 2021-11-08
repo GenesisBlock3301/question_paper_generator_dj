@@ -1,9 +1,7 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 
-<div id="login">
+<div id="login" style="margin-top: 100px;">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="row">
 
@@ -17,7 +15,6 @@
                     <div class="tab-pane" id="Registration">
                         <form id="questionForm" class="form-horizontal" data-course-url="{% url 'ajax_load_course'%}">
                             {% csrf_token %}
-
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <!-- <input class="form-control" placeholder="Name" type="text" /> -->
@@ -35,14 +32,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                               <div class="col-sm-12">
-                               {{form.course}}
-                                </div> 
+                                <div class="col-sm-12">
+                                    {{form.course}}
+                                </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-12">
-                                    {{form.media }}
-                                    {{form.body}}
+                                    {{form.media }} {{form.body}}
                                 </div>
                             </div>
                             <!-- {{form.media }}
@@ -63,21 +59,13 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-    $("#id_course").load(function () {
-        const url = $("#questionForm").attr("data-course-url");  // get the url of the `load_cities` view
+    $("#id_course").load(function() {
+        const url = $("#questionForm").attr("data-course-url"); // get the url of the `load_cities` view
 
-        $.ajax({                       // initialize an AJAX request
-            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ 
-            success: function (data) {   // `data` is the return of the `load_cities` view function
-                $("#id_course").html(data);  // replace the contents of the city input with the data that came from the server
-                /*
-                let html_data = '<option value="">---------</option>';
-                data.forEach(function (city) {
-                    html_data += `<option value="${city.id}">${city.name}</option>`
-                });
-                console.log(html_data);
-                $("#id_city").html(html_data);
-                */
+        $.ajax({ // initialize an AJAX request
+            url: url, // set the url of the request (= /persons/ajax/load-cities/ 
+            success: function(data) { // `data` is the return of the `load_cities` view function
+                $("#id_course").html(data); // replace the contents of the city input with the data that came from the server
             }
         });
 

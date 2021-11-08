@@ -6,6 +6,7 @@ urlpatterns = [
     path("faculty/", views.FacultyView.as_view(),name="faculty"),
     path("department/", views.DepartmentView.as_view(),name="department"),
     path("course/", views.CourseView.as_view(),name="course"),
+    path("questions/",views.QuestionsView.as_view(),name="questions"),
     path("create-question/", views.CreateQuestion.as_view(),name="create-question"),
     path('ajax/load-course/', views.load_course, name='ajax_load_course'), 
     

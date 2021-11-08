@@ -15,3 +15,7 @@ class LoginView(View):
 class RegistrationView(View):
     def get(self,request):
         return render(request,'register.html')
+
+class AdminRegisterView(View):
+    def get(self,request):
+        return render(request,'admin_reg.html')
