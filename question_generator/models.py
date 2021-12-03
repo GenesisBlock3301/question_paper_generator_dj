@@ -3,6 +3,7 @@ import uuid
 from ckeditor.fields import RichTextField
 from accounts.models import User
 
+
 class Faculty(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     faculty_name = models.CharField(max_length=255,blank=True,null=True)
@@ -39,11 +40,15 @@ class Course(models.Model):
 
 
 class Question(models.Model):
-    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255,blank=True,null=True)
+    term_name = models.CharField(max_length=255,blank=True,null=True)
     full_mark = models.CharField(max_length=255,blank=True,null=True)
     difficulty_level = models.CharField(max_length=255,blank=True,null=True)
+    duration = models.CharField(max_length=255,blank=True,null=True)
+    batch = models.CharField(max_length=255,blank=True,null=True)
+    department = models.ForeignKey(Department,related_name="questions",on_delete=models.CASCADE)
+    semester = models.CharField(max_length=255,blank=True,null=True)
     course = models.ForeignKey(Course,related_name="questions",on_delete=models.CASCADE)
     user = models.ForeignKey(User,related_name="questions",on_delete=models.CASCADE)
     body = RichTextField(blank=True,null=True)
@@ -53,6 +58,37 @@ class Question(models.Model):
 
     def __str__(self) -> str:
         return f"{self.title}"
+
+
+class Profile(models.Model):
+    ROLE = [
+        ('TR', 'Teacher'),
+        ('AD', 'Admin')
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    id_no = models.CharField(max_length=255, blank=True, null=True)
+    user = models.ForeignKey(User, related_name="users",
+                             on_delete=models.CASCADE)
+    faculty = models.ForeignKey(
+        Faculty, related_name="Faculties", on_delete=models.CASCADE)
+    department = models.ForeignKey(
+        Department, related_name="Departments", on_delete=models.CASCADE)
+    role = models.CharField(max_length=255, blank=True, null=True)
+    
+    def save(self,*args, **kwargs):
+        if self.user.is_teacher:
+            self.role = "Teacher"
+        else:
+            self.role = "Admin"
+        super(Profile, self).save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+
+
+
     
     
     

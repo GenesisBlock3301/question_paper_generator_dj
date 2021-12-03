@@ -1,115 +1,55 @@
-{% extends 'base.html' %} {% block content %}
-<div class="all-title-box">
-    <div class="container text-center">
-        <h1>{{title}}</h1>
-    </div>
+{% extends 'base.html'%} {% block content %}
+
+<div style="margin-top: 60px;">
+    <h3 class="text-center">{{title}}</h3>
+    <table id="example" class="table table-striped table-bordered" style="width: 100%;">
+        <thead>
+            <tr>
+                {% for th in table_header%}
+                <th>{{th}}</th>
+                {%endfor%}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for question in questions%}
+            <tr>
+                <td>
+                    {%if pending%}
+                    {{question.title}}
+                    {%else%}
+                    <a href="{% url 'question' question.id %}">{{question.title}}</a>
+                    {%endif%}
+                    
+                </td>
+                <td>{{question.difficulty_level}}</td>
+                <td>{{question.department}}</td>
+                <td>{{question.semester}}</td>
+                <td>{{question.course}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                      </svg>
+                    </button>
+                    {% if user_question %}
+                    <button type="button" class="btn btn-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                          </svg>
+                    </button>
+                    {% endif %}
+                    
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+      
+    </table>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script>
 </div>
-
-<div id="overviews" class="section wb">
-    <div class="container">
-        <div class="section-title row text-center">
-            <div class="col-md-8 offset-md-2">
-                <h2 class="lead">
-                    {{sub_title}}
-                </h2>
-            </div>
-        </div>
-        <!-- end title -->
-
-        <hr class="invis" />
-
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="course-item">
-                    <div class="image-blog">
-                        <img src="images/blog_1.jpg" alt="" class="img-fluid" />
-                    </div>
-                    <div class="course-br">
-                        <div class="course-title">
-                            <h2><a href="#" title="">Engineering</a></h2>
-                        </div>
-                        <div class="course-desc">
-                            <p>
-                                Lorem ipsum door sit amet, fugiat deicata avise id cum, no quo maiorum intel ogrets geuiat operts elicata libere avisse id cumlegebat, liber regione eu sit....
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-            <!-- end col -->
-
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="course-item">
-                    <div class="image-blog">
-                        <img src="images/blog_2.jpg" alt="" class="img-fluid" />
-                    </div>
-                    <div class="course-br">
-                        <div class="course-title">
-                            <h2><a href="#" title="">Hotel Management</a></h2>
-                        </div>
-                        <div class="blog-desc">
-                            <p>
-                                Lorem ipsum door sit amet, fugiat deicata avise id cum, no quo maiorum intel ogrets geuiat operts elicata libere avisse id cumlegebat, liber regione eu sit....
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end col -->
-        </div>
-        <!-- end row -->
-
-        <hr class="hr3" />
-
-
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="course-item">
-                    <div class="image-blog">
-                        <img src="images/blog_5.jpg" alt="" class="img-fluid" />
-                    </div>
-                    <div class="course-br">
-                        <div class="course-title">
-                            <h2><a href="#" title="">Finance</a></h2>
-                        </div>
-                        <div class="course-desc">
-                            <p>
-                                Lorem ipsum door sit amet, fugiat deicata avise id cum, no quo maiorum intel ogrets geuiat operts elicata libere avisse id cumlegebat, liber regione eu sit....
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-            <!-- end col -->
-
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="course-item">
-                    <div class="image-blog">
-                        <img src="images/blog_6.jpg" alt="" class="img-fluid" />
-                    </div>
-                    <div class="course-br">
-                        <div class="course-title">
-                            <h2><a href="#" title="">Fashion Designing</a></h2>
-                        </div>
-                        <div class="course-desc">
-                            <p>
-                                Lorem ipsum door sit amet, fugiat deicata avise id cum, no quo maiorum intel ogrets geuiat operts elicata libere avisse id cumlegebat, liber regione eu sit....
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-            <!-- end col -->
-        </div>
-        <!-- end row -->
-    </div>
-    <!-- end container -->
-</div>
-
-{% endblock content %}
+{%endblock%}
