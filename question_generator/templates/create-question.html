@@ -1,75 +1,102 @@
-{% extends 'base.html' %}
- {% block content %}
+{% extends 'AppBase.html' %} {% block appbaseContent %} {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
+<div class="alert alert-danger">{{ message }}</div>
+{% else %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endif %} {% endfor %} {% endif %}
+<section class="vh-80" style="background-color: #eee;">
+    <div class="container">
+        <div style="margin-top:25px" class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black" style="border-radius: 25px;">
+                    <div class="card-body p-md-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 col-lg-12 col-xl-12 order-2 order-lg-1">
+                                <p class="text-center fw-bold">Question</p>
+                                <form class="mx-1 mx-md-12" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{ form.faculty }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{ form.term_name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.full_mark}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.difficulty_level}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.duration}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.course}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.semester}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-xl-6 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                {{form.batch}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            {{form.department }}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            {{form.media }} {{form.body}}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                        <input type="submit" class="btn btn-primary btn-lg" value="Create Question" />
+                                    </div>
+                                   
+                                </form>
 
-<div id="login" style="margin-top: 100px;">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="row">
-
-            <div class="modal-content col-sm-12 col-lg-12 col-md-12">
-                <div class="modal-body customer-box">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs">
-                        <li><a>Create Question</a></li>
-                    </ul>
-                    <!-- Tab panes -->
-                    <div class="tab-pane" id="Registration">
-                        <form id="questionForm" class="form-horizontal" data-course-url="{% url 'ajax_load_course'%}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <!-- <input class="form-control" placeholder="Name" type="text" /> -->
-                                    {{ form.title }}
-                                </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {{form.full_mark}}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {{form.difficulty_level}}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {{form.course}}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    {{form.media }} {{form.body}}
-                                </div>
-                            </div>
-                            <!-- {{form.media }}
-                        {{form.as_p}} -->
-                            <div class="row">
-                                <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-light btn-radius btn-brd grd1">
-                                        Submit
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+            
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script>
-    $("#id_course").load(function() {
-        const url = $("#questionForm").attr("data-course-url"); // get the url of the `load_cities` view
 
-        $.ajax({ // initialize an AJAX request
-            url: url, // set the url of the request (= /persons/ajax/load-cities/ 
-            success: function(data) { // `data` is the return of the `load_cities` view function
-                $("#id_course").html(data); // replace the contents of the city input with the data that came from the server
-            }
-        });
-
-    });
-</script>
-
-{% endblock content %}
+{% endblock %}

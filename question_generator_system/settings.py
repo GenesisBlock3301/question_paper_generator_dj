@@ -173,21 +173,6 @@ CKEDITOR_CONFIGS = {
         'toolbarCanCollapse': True,
         'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
         'tabSpaces': 4,
-        # 'extraPlugins': ','.join([
-        #     'uploadimage', # the upload image feature
-        #     # your extra plugins here
-        #     'div',
-        #     'autolink',
-        #     'autoembed',
-        #     'embedsemantic',
-        #     'autogrow',
-        #     # 'devtools',
-        #     'widget',
-        #     'lineutils',
-        #     'clipboard',
-        #     'dialog',
-        #     'dialogui',
-        #     'elementspath'
-        # ]),
+        
     }
 }

@@ -38,18 +38,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = None
     email = models.EmailField(_('email_address'), unique=True)
 
-    password = models.CharField(max_length=50)
-    confirm_password = models.CharField(max_length=50)
+    password = models.CharField(max_length=50,blank=True,null=True)
+    confirm_password = models.CharField(max_length=50,blank=True,null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
     is_teacher = models.BooleanField(default=False)
+    store_pass = models.CharField(max_length=50,blank=True,null=True,default="")
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    approve = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email

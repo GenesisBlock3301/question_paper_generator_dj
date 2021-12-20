@@ -1,0 +1,80 @@
+{% extends 'AppBase.html' %}
+
+{% block appbaseContent %}
+
+<div class="container">
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row container d-flex justify-content-center">
+                <div class="col-xl-10 col-md-10">
+                    <div class="card user-card-full">
+                        <div class="row m-l-0 m-r-0 mt-4">
+                            <div class="col-sm-4 bg-c-lite user-profile">
+                                <div class="card-block text-center text-white">
+                                    <div class="m-b-25">
+                                        {% if teacher.image %}
+                                            <img style="max-width: 200px;max-height: 200px;border-radius: 50%"
+                                                 src="{{ employee.image.url }}" class="img-radius"
+                                                 alt="User-Profile-Image">
+                                            {% else %}
+                                            <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
+                                        {% endif %}
+                                    </div>
+                                    <h4 class="text-success" style="color:black">{{ teacher.name }}</h4>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="card-block">
+                                    <h4 class="p-3 mb-2 bg-success text-white">Information</h4>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">ID No: </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.id_no }}</p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Email: </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.user.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Faculty </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.faculty }}</p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Department: </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.department }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Approve Question </h4>
+                                            <p class="m-b-10 f-w-600">{{ approve_quesion }}</p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Not Approve Question </h4>
+                                            <p class="m-b-10 f-w-600">{{ not_approve }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Success Rate </h4>
+                                            <p class="m-b-10 f-w-600">{{ success_rate }}%</p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h4 class="text-muted f-w-400 text-success">Not Approve Question </h4>
+                                            <p class="m-b-10 f-w-600">{{ not_approve }}</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock  %}

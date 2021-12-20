@@ -14,7 +14,7 @@
         <tbody>
             {%for item in item_list%}
             <tr>
-                <td >
+                <td width="10px">
                     {%if pending%} {{item.faculty}} 
                     {%else%}
                     <a href="{% url 'question' item.id %}">{{item.faculty}}</a> 
@@ -25,6 +25,7 @@
                 <td>{{item.department}}</td>
                 <td>{{item.semester}}</td>
                 <td>{{item.course}}</td>
+                {%endif%}
                 <td>
                     <a href="{% url 'delete-question' item.id %}">
                         <button type="button" class="btn btn-info">

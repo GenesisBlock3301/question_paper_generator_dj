@@ -6,12 +6,13 @@ from accounts.models import User
 
 class Faculty(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    faculty_name = models.CharField(max_length=255,blank=True,null=True)
-    about_faculty = models.CharField(max_length=255,blank=True,null=True)
+    faculty_name = models.CharField(max_length=255, blank=True, null=True)
+    short_form = models.CharField(max_length=255, blank=True, null=True)
+    about_faculty = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.faculty_name}"
-    
+
     class Meta:
         verbose_name_plural = "Faculties"
         ordering = ["-id"]
@@ -19,21 +20,25 @@ class Faculty(models.Model):
 
 class Department(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    department_name = models.CharField(max_length=255,blank=True,null=True)
-    about_department = models.CharField(max_length=255,blank=True,null=True)
-    faculty = models.ForeignKey(Faculty,related_name="deparments",on_delete=models.CASCADE,verbose_name="related faculty")
+    department_name = models.CharField(max_length=255, blank=True, null=True)
+    short_form = models.CharField(max_length=255, blank=True, null=True)
+    about_department = models.CharField(max_length=255, blank=True, null=True)
+    faculty = models.ForeignKey(Faculty, related_name="deparments",
+                                on_delete=models.CASCADE, verbose_name="related faculty")
 
     def __str__(self) -> str:
         return f"{self.department_name}"
 
 
-
 class Course(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    course_title = models.CharField(max_length=255,blank=True,null=True)
-    about_course = models.CharField(max_length=255,blank=True,null=True)
-    course_code = models.CharField(max_length=255,blank=True,null=True)
-    department = models.ForeignKey(Department,related_name="courses",on_delete=models.CASCADE,verbose_name="related department")
+    course_title = models.CharField(max_length=255, blank=True, null=True)
+    about_course = models.CharField(max_length=255, blank=True, null=True)
+    sort_form = models.CharField(max_length=255, blank=True, null=True)
+    course_code = models.CharField(max_length=255, blank=True, null=True)
+    department = models.ForeignKey(Department, related_name="courses",
+                                   on_delete=models.CASCADE, verbose_name="related department")
+    
 
     def __str__(self) -> str:
         return f"{self.course_title}"
@@ -41,42 +46,40 @@ class Course(models.Model):
 
 class Question(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255,blank=True,null=True)
-    term_name = models.CharField(max_length=255,blank=True,null=True)
-    full_mark = models.CharField(max_length=255,blank=True,null=True)
-    difficulty_level = models.CharField(max_length=255,blank=True,null=True)
-    duration = models.CharField(max_length=255,blank=True,null=True)
-    batch = models.CharField(max_length=255,blank=True,null=True)
-    department = models.ForeignKey(Department,related_name="questions",on_delete=models.CASCADE)
-    semester = models.CharField(max_length=255,blank=True,null=True)
-    course = models.ForeignKey(Course,related_name="questions",on_delete=models.CASCADE)
-    user = models.ForeignKey(User,related_name="questions",on_delete=models.CASCADE)
-    body = RichTextField(blank=True,null=True)
-    approve = models.BooleanField(default=False,blank=True,null=True)
-    created_time = models.DateTimeField(auto_now_add=True,blank=True,null=True)
-    updated_time = models.DateTimeField(auto_now=True,blank=True,null=True)
+    term_name = models.CharField(max_length=255, blank=True, null=True)
+    full_mark = models.CharField(max_length=255, blank=True, null=True)
+    difficulty_level = models.CharField(max_length=255, blank=True, null=True)
+    duration = models.CharField(max_length=255, blank=True, null=True)
+    batch = models.CharField(max_length=255, blank=True, null=True)
+    faculty = models.CharField(max_length=255, blank=True, null=True)
+    department = models.CharField(max_length=255, blank=True, null=True)
+    course = models.CharField(max_length=255, blank=True, null=True)
+    semester = models.CharField(max_length=255, blank=True, null=True)
+    user = models.ForeignKey(
+        User, related_name="questions", on_delete=models.CASCADE)
+    body = RichTextField(blank=True, null=True)
+    approve = models.BooleanField(default=False, blank=True, null=True)
+    created_time = models.DateTimeField(
+        auto_now_add=True, blank=True, null=True)
+    updated_time = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self) -> str:
-        return f"{self.title}"
+        return f"{self.course}"
 
 
 class Profile(models.Model):
-    ROLE = [
-        ('TR', 'Teacher'),
-        ('AD', 'Admin')
-    ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, blank=True, null=True)
     id_no = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(User, related_name="users",
                              on_delete=models.CASCADE)
-    faculty = models.ForeignKey(
-        Faculty, related_name="Faculties", on_delete=models.CASCADE)
-    department = models.ForeignKey(
-        Department, related_name="Departments", on_delete=models.CASCADE)
+    short_name = models.CharField(max_length=255, blank=True, null=True)
+    faculty = models.CharField(max_length=255, blank=True, null=True)
+    department = models.CharField(max_length=255, blank=True, null=True)
     role = models.CharField(max_length=255, blank=True, null=True)
+    designation = models.CharField(max_length=255, blank=True, null=True)
     
-    def save(self,*args, **kwargs):
+    def save(self, *args, **kwargs):
         if self.user.is_teacher:
             self.role = "Teacher"
         else:
@@ -85,11 +88,3 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}"
-
-
-
-
-    
-    
-    
-    
