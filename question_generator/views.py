@@ -1,16 +1,18 @@
 from django import forms, views
+from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
-from question_generator.models import Department, Faculty, Question, Course
+from accounts.models import User
+from question_generator.models import Department, Faculty, Profile, Question, Course
 from .forms import CreationQuestionForm
 from django.views.generic.edit import UpdateView
 from django.forms.models import model_to_dict
 from django.utils.decorators import method_decorator
-from .decorators import teacher_required
+from .decorators import teacher_required,admin_required
 from django.views.generic.edit import DeleteView
 from django.contrib import messages
 from django.http import JsonResponse
-
+from .utility import render_to_pdf
 
 class DataTableView(View):
     def get(self, request):
@@ -19,10 +21,15 @@ class DataTableView(View):
 
 class LandingView(View):
     def get(self, request):
+        if request.user.is_authenticated and request.user.is_teacher:
+            return redirect("teacher-profile")
+        if request.user.is_staff and request.user.is_authenticated:
+            return redirect("teachers")
         return render(request, "landing.html")
 
 
 class FacultyView(View):
+    @method_decorator(admin_required)
     def get(self, request):
 
         table_header = ['Faculty Name', 'S. Form', 'About Faculty']
@@ -36,6 +43,7 @@ class FacultyView(View):
 
 
 class FacultyQuestionView(View):
+    @method_decorator(admin_required)
     def get(self, request, faculty):
         admin = False
         if request.user.is_staff:
@@ -47,10 +55,11 @@ class FacultyQuestionView(View):
             'admin': admin,
             "question": True
         }
-        return render(request, 'List_of_item.html', context=context)
+        return render(request, 'Faculty/Faculty_question.html', context=context)
 
 
 class DepartmentView(View):
+    @method_decorator(admin_required)
     def get(self, request):
 
         table_header = ['Dept. Name', 'S. Form', 'About Dept.']
@@ -64,6 +73,7 @@ class DepartmentView(View):
 
 
 class DepartmentQuestionView(View):
+    @method_decorator(admin_required)
     def get(self, request, dept):
         admin = False
         if request.user.is_staff:
@@ -79,6 +89,7 @@ class DepartmentQuestionView(View):
 
 
 class CoursesView(View):
+    @method_decorator(admin_required)
     def get(self, request):
         context = {
             'title': "All Courses",
@@ -90,6 +101,7 @@ class CoursesView(View):
 
 
 class CourseQuestionView(View):
+    @method_decorator(admin_required)
     def get(self, request, course):
         admin = False
         if request.user.is_staff:
@@ -104,8 +116,8 @@ class CourseQuestionView(View):
         return render(request, 'Course/Course_Question.html', context=context)
 
 
-# @method_decorator(teacher_required)
 class CreateQuestion(View):
+    # method_decorator()
     def get(self, request):
         form = CreationQuestionForm()
         return render(request, "create-question.html", {'form': form})
@@ -136,7 +148,10 @@ class CreateQuestion(View):
             course=course
         )
         question.save()
-        return redirect('pquestions')
+        if request.user.is_teacher:
+            return redirect("tpquestions")
+        if request.user.is_staff:
+            return redirect("questions")
 
 
 class UpdateQuestionView(View):
@@ -150,32 +165,30 @@ class UpdateQuestionView(View):
 
     def post(self, request, pk):
         instance = get_object_or_404(Question, id=pk)
-        form = self.form_class(request.POST, instance=instance)
-        instance.faculty = form.data['faculty']
-        instance.term_name = form.data['term_name']
-        instance.full_mark = form.data['full_mark']
-        instance.difficulty_level = form.data["difficulty_level"]
-        instance.batch = form.data["batch"]
-        instance.department = form.data["department"]
-        instance.course = form.data["course"]
-        instance.duration = form.data["duration"]
-        instance.semester = form.data["semester"]
-        instance.body = form.data["body"]
+        # form = self.form_class(request.POST, instance=instance)
+        instance.faculty = request.POST['faculty']
+        instance.term_name = request.POST['term_name']
+        instance.full_mark = request.POST['full_mark']
+        instance.difficulty_level = request.POST["difficulty_level"]
+        instance.batch = request.POST["batch"]
+        instance.department = request.POST["department"]
+        instance.course = request.POST["course"]
+        instance.duration = request.POST["duration"]
+        instance.semester = request.POST["semester"]
+        instance.body = request.POST["body"]
         instance.save()
+        if request.user.is_teacher:
+            return redirect("tpquestions")
         return redirect("pquestions")
 
 
 class QuestionsView(View):
+    @method_decorator(admin_required)
     def get(self, request):
-        admin = False
-        if request.user.is_staff:
-            admin = True
         context = {
             'title': "All Question",
             'table_header': ['Faculty', 'Difficulty Level', 'Department', 'Semester', 'Course', 'Teacher'],
             'item_list': Question.objects.filter(approve=True),
-            'admin': admin,
-            "question": True
         }
         return render(request, 'Questions/Question_list.html', context=context)
 
@@ -186,22 +199,23 @@ class DeleteQuestionView(DeleteView):
 
 
 class PendingQuestionView(View):
+    @method_decorator(admin_required)
     def get(self, request):
         admin = False
         if request.user.is_staff:
             admin = True
         item_list = Question.objects.filter(
             approve=False, user=request.user)\
-                 if request.user.is_teacher else Question.objects.filter(approve=False)
+            if request.user.is_teacher else Question.objects.filter(approve=False)
         context = {
             'title': "Pending Question",
             'table_header': ['Faculty', 'Difficulty Level', 'Department', 'Semester', 'Course'],
             'item_list': item_list
 
         }
-        return render(request, 'List_of_item.html', context=context)
+        return render(request, 'Admin/AdminPendingQuestion.html', context=context)
 
-
+@admin_required
 def question_approval(request, pk):
     approval = get_object_or_404(Question, id=pk)
     approval.approve = True
@@ -211,15 +225,27 @@ def question_approval(request, pk):
 # Teacher portion
 
 
-class UserQuestionView(View):
+class TeacherQuestionView(View):
+    @method_decorator(teacher_required)
     def get(self, request):
         context = {
             'title': f"{request.user} Question",
             'table_header': ['Title', 'Difficulty Level', 'Department', 'Semester', 'Course'],
-            'questions': Question.objects.all(),
-            "user_question": True
+            'item_list': Question.objects.filter(user=request.user, approve=True),
         }
-        return render(request, 'List_of_item.html', context=context)
+
+        return render(request, 'Teacher/TeacherQuestion.html', context)
+
+
+class TeacherPendingQuestionView(View):
+    @method_decorator(teacher_required)
+    def get(self, request):
+        context = {
+            'title': f"{request.user} Question",
+            'table_header': ['Title', 'Difficulty Level', 'Department', 'Semester', 'Course'],
+            'questions': Question.objects.filter(user=request.user, approve=False),
+        }
+        return render(request, 'Teacher/TeacherPending.html', context=context)
 
 
 class SingleQuestionView(View):
@@ -228,9 +254,23 @@ class SingleQuestionView(View):
         return render(request, 'Detail.html', {'question': question, })
 
 
-# AJAX
+class GenerateQuestion(View):
+    def get(self, request,pk):
+        question = Question.objects.filter(id=pk).first()
+        course_code = Course.objects.filter(course_title=question.course).first()
+        data = model_to_dict(question)
+        data["course_code"] = course_code.course_code
+        print(data)
+        pdf = render_to_pdf("Questions/Export_Question.html",data)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "question_%s.pdf" %("12341231")
+            content = "inline; filename='%s'" %(filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
 
 
-def load_course(request):
-    questions = Question.objects.all()
-    return render(request, 'course_dropdown.html', {'questions': questions})

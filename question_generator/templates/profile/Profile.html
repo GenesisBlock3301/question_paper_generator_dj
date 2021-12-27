@@ -14,23 +14,25 @@
                                     <div class="m-b-25">
                                         {% if teacher.image %}
                                             <img style="max-width: 200px;max-height: 200px;border-radius: 50%"
-                                                 src="{{ employee.image.url }}" class="img-radius"
+                                                 src="{{ teacher.image.url }}" class="img-radius"
                                                  alt="User-Profile-Image">
                                             {% else %}
                                             <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
                                         {% endif %}
                                     </div>
                                     <h4 class="text-success" style="color:black">{{ teacher.name }}</h4>
-
+                                    {% if request.user.is_teacher %}
+                                    <a class="btn btn-primary" href="{% url "update-profile" teacher.id %}">Edit</a>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-sm-8">
                                 <div class="card-block">
-                                    <h4 class="p-3 mb-2 bg-success text-white">Information</h4>
+                                    <h4 class="p-3 mb-2 bg-success text-white">Teacher Information</h4>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <h4 class="text-muted f-w-400 text-success">ID No: </h4>
-                                            <p class="m-b-10 f-w-600">{{ teacher.id_no }}</p>
+                                            <p class="m-b-10 f-w-600">{{ teacher.user.id_no }}</p>
                                         </div>
                                         <div class="col-sm-6">
                                             <h4 class="text-muted f-w-400 text-success">Email: </h4>
@@ -63,8 +65,8 @@
                                             <p class="m-b-10 f-w-600">{{ success_rate }}%</p>
                                         </div>
                                         <div class="col-sm-6">
-                                            <h4 class="text-muted f-w-400 text-success">Not Approve Question </h4>
-                                            <p class="m-b-10 f-w-600">{{ not_approve }}</p>
+                                            <h4 class="text-muted f-w-400 text-success">Designation </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.designation }}</p>
                                         </div>
                                     </div>
 

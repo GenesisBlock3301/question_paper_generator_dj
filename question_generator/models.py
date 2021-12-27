@@ -38,7 +38,6 @@ class Course(models.Model):
     course_code = models.CharField(max_length=255, blank=True, null=True)
     department = models.ForeignKey(Department, related_name="courses",
                                    on_delete=models.CASCADE, verbose_name="related department")
-    
 
     def __str__(self) -> str:
         return f"{self.course_title}"
@@ -69,16 +68,16 @@ class Question(models.Model):
 
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    image = models.FileField(upload_to="profile/",blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    id_no = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(User, related_name="users",
-                             on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="users",
+                                on_delete=models.CASCADE)
     short_name = models.CharField(max_length=255, blank=True, null=True)
     faculty = models.CharField(max_length=255, blank=True, null=True)
     department = models.CharField(max_length=255, blank=True, null=True)
     role = models.CharField(max_length=255, blank=True, null=True)
     designation = models.CharField(max_length=255, blank=True, null=True)
-    
+
     def save(self, *args, **kwargs):
         if self.user.is_teacher:
             self.role = "Teacher"

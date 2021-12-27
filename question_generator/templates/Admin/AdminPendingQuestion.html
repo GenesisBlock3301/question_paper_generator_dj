@@ -1,6 +1,5 @@
-
 {% extends 'base.html'%} {% block content %}
-{% load tags%}
+
 <div style="margin-top: 60px;">
     <h3 class="text-center">{{title}}</h3>
     <table id="example" class="table table-striped table-bordered" style="width: 100%;">
@@ -15,18 +14,17 @@
         <tbody>
             {%for item in item_list%}
             <tr>
-                <td>
+                <td >
+                    {%if pending%} {{item.faculty}} 
+                    {%else%}
                     <a href="{% url 'question' item.id %}">{{item.faculty}}</a> 
+                    {%endif%}
+
                 </td>
                 <td>{{item.difficulty_level}}</td>
                 <td>{{item.department}}</td>
                 <td>{{item.semester}}</td>
                 <td>{{item.course}}</td>
-                {% if item.user.email %}
-                <td><a href="{% url 'teachers-admin-view' item.user.email %}">{{item.user.email|teacher_name}}</a></td>
-                {%else%}
-                <td>{{item.user.email}}</td>
-                {% endif %}
                 <td>
                     <a href="{% url 'delete-question' item.id %}">
                         <button type="button" class="btn btn-info">
@@ -37,6 +35,13 @@
                               </svg>
                         </button>
                     </a>
+                    <a href="{% url 'approval' item.id %}">
+                        <button id="ok" data-id={{item.id}} type="button" class="btn btn-info">
+                            <i class="icon-ok"></i>ok
+                    </button>
+                    </a>
+
+
                 </td>
             </tr>
             {%endfor%}

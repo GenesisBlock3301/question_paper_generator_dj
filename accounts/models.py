@@ -50,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    id_no = models.CharField(max_length=255,null=True,blank=True)
 
     def __str__(self):
         return self.email

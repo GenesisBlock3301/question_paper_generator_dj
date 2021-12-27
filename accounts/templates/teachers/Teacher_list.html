@@ -14,10 +14,13 @@
             {%for item in item_list%}
             <tr>
                 <td>
-                    <a href="{% url 'teachers-admin' item.id %}">{{item.name}}</a>
+                    <a href="{% url 'teachers-admin-view' item.user.email %}">{{item.name}}</a>
                 </td>
+                <td>{{ item.id_no }}</td>
+                <td>{{ item.short_name }}</td>
                 <td>{{ item.faculty }}</td>
                 <td>{{ item.department }}</td>
+                <td>{{ item.designation }}</td>
                 </tr>
             {%endfor%}
         </tbody>

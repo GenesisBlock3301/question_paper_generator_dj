@@ -15,11 +15,7 @@
             {%for item in item_list%}
             <tr>
                 <td >
-                    {%if pending%} {{item.faculty}} 
-                    {%else%}
                     <a href="{% url 'question' item.id %}">{{item.faculty}}</a> 
-                    {%endif%}
-
                 </td>
                 <td>{{item.difficulty_level}}</td>
                 <td>{{item.department}}</td>
@@ -43,12 +39,7 @@
                           </svg>
                     </button>
                     </a>
-                    <a href="{% url 'approval' item.id %}">
-                        <button id="ok" data-id={{item.id}} type="button" class="btn btn-info">
-                            <i class="icon-ok"></i>ok
-                    </button>
                     </a>
-
 
                 </td>
             </tr>

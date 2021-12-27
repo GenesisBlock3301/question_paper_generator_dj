@@ -14,18 +14,13 @@
         <tbody>
             {%for item in item_list%}
             <tr>
-                <td width="10px">
-                    {%if pending%} {{item.faculty}} 
-                    {%else%}
+                <td>
                     <a href="{% url 'question' item.id %}">{{item.faculty}}</a> 
-                    {%endif%}
-
                 </td>
                 <td>{{item.difficulty_level}}</td>
                 <td>{{item.department}}</td>
                 <td>{{item.semester}}</td>
                 <td>{{item.course}}</td>
-                {%endif%}
                 <td>
                     <a href="{% url 'delete-question' item.id %}">
                         <button type="button" class="btn btn-info">
