@@ -11,10 +11,12 @@ class ProfileForm(forms.ModelForm):
         widget=forms.FileInput(
             attrs={'class': 'form-control-file', 'placeholder': 'image'}),
         required=False, max_length=100)
+
     faculty = forms.CharField(
         widget=forms.Select(
             attrs={'class': 'form-select form-select-lg mb-3'},
             choices=Faculty.objects.all().values_list('faculty_name', 'faculty_name')))
+            
     department = forms.CharField(
         widget=forms.Select(
             attrs={'class': 'form-select form-select-lg mb-3'},

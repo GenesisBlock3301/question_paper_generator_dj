@@ -1,7 +1,5 @@
 from django import template
 from question_generator.models import Course, Profile
-from question_generator.views import question_approval
-
 
 register = template.Library()
 

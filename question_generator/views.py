@@ -3,7 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from accounts.models import User
-from question_generator.models import Department, Faculty, Profile, Question, Course
+from question_generator.models import Department, Faculty, Question, Course
 from .forms import CreationQuestionForm
 from django.views.generic.edit import UpdateView
 from django.forms.models import model_to_dict
