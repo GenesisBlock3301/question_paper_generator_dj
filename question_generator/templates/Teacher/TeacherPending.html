@@ -14,13 +14,17 @@
         <tbody>
             {%for item in questions%}
             <tr>
+                <td>{{item.faculty}}</td>
+                <td>{{item.difficulty_level}}</td>
+                <td>{{item.department}}</td>
+                <td>{{item.semester}}</td>
                 <td >
                     <a href="{% url 'question' item.id %}">{{item.course}}</a> 
                 </td>
-                <td>{{item.difficulty_level}}</td>
-                <td>{{item.faculty}}</td>
-                <td>{{item.department}}</td>
-                <td>{{item.semester}}</td>
+
+<!--                <td>{{item.faculty}}</td>-->
+
+
                 <td>
                     <a href="{% url 'delete-question' item.id %}">
                         <button type="button" class="btn btn-info">

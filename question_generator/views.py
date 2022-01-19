@@ -8,15 +8,11 @@ from .forms import CreationQuestionForm
 from django.views.generic.edit import UpdateView
 from django.forms.models import model_to_dict
 from django.utils.decorators import method_decorator
-from .decorators import teacher_required,admin_required
+from .decorators import teacher_required, admin_required
 from django.views.generic.edit import DeleteView
 from django.contrib import messages
 from django.http import JsonResponse
 from .utility import render_to_pdf
-
-class DataTableView(View):
-    def get(self, request):
-        return render(request, "List_of_item.html")
 
 
 class LandingView(View):
@@ -133,25 +129,31 @@ class CreateQuestion(View):
         semester = request.POST.get("semester", None)
         body = request.POST.get("body", None)
         course = request.POST.get("course", None)
-
-        question = Question.objects.create(
-            user=request.user,
-            faculty=faculty,
-            term_name=term_name,
-            full_mark=full_mark,
-            difficulty_level=difficulty_level,
-            batch=batch,
-            department=department,
-            duration=duration,
-            semester=semester,
-            body=body,
-            course=course
-        )
-        question.save()
-        if request.user.is_teacher:
-            return redirect("tpquestions")
-        if request.user.is_staff:
-            return redirect("questions")
+        limit = Question.objects.filter(
+            user=request.user, approve=True).count()
+        if limit <= 10:
+            question = Question.objects.create(
+                user=request.user,
+                faculty=faculty,
+                term_name=term_name,
+                full_mark=full_mark,
+                difficulty_level=difficulty_level,
+                batch=batch,
+                department=department,
+                duration=duration,
+                semester=semester,
+                body=body,
+                course=course
+            )
+            question.save()
+            if request.user.is_teacher:
+                return redirect("tpquestions")
+            if request.user.is_staff:
+                return redirect("pquestions")
+        else:
+            messages.error(
+                request, "Maximum 10 questions created by one teacher.")
+            return redirect("create-question")
 
 
 class UpdateQuestionView(View):
@@ -176,6 +178,7 @@ class UpdateQuestionView(View):
         instance.duration = request.POST["duration"]
         instance.semester = request.POST["semester"]
         instance.body = request.POST["body"]
+        instance.approve = False
         instance.save()
         if request.user.is_teacher:
             return redirect("tpquestions")
@@ -201,9 +204,7 @@ class DeleteQuestionView(DeleteView):
 class PendingQuestionView(View):
     @method_decorator(admin_required)
     def get(self, request):
-        admin = False
-        if request.user.is_staff:
-            admin = True
+
         item_list = Question.objects.filter(
             approve=False, user=request.user)\
             if request.user.is_teacher else Question.objects.filter(approve=False)
@@ -214,6 +215,7 @@ class PendingQuestionView(View):
 
         }
         return render(request, 'Admin/AdminPendingQuestion.html', context=context)
+
 
 @admin_required
 def question_approval(request, pk):
@@ -230,7 +232,7 @@ class TeacherQuestionView(View):
     def get(self, request):
         context = {
             'title': f"{request.user} Question",
-            'table_header': ['Title', 'Difficulty Level', 'Department', 'Semester', 'Course'],
+            'table_header': ['Faculty', 'Difficulty Level', 'Department', 'Semester', 'Course'],
             'item_list': Question.objects.filter(user=request.user, approve=True),
         }
 
@@ -242,7 +244,7 @@ class TeacherPendingQuestionView(View):
     def get(self, request):
         context = {
             'title': f"{request.user} Question",
-            'table_header': ['Title', 'Difficulty Level', 'Department', 'Semester', 'Course'],
+            'table_header': ['Faculty', 'Difficulty Level', 'Department', 'Semester', 'Course'],
             'questions': Question.objects.filter(user=request.user, approve=False),
         }
         return render(request, 'Teacher/TeacherPending.html', context=context)
@@ -255,22 +257,22 @@ class SingleQuestionView(View):
 
 
 class GenerateQuestion(View):
-    def get(self, request,pk):
+    @method_decorator(admin_required)
+    def get(self, request, pk):
         question = Question.objects.filter(id=pk).first()
-        course_code = Course.objects.filter(course_title=question.course).first()
+        course_code = Course.objects.filter(
+            course_title=question.course).first()
         data = model_to_dict(question)
         data["course_code"] = course_code.course_code
         print(data)
-        pdf = render_to_pdf("Questions/Export_Question.html",data)
+        pdf = render_to_pdf("Questions/Export_Question.html", data)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "question_%s.pdf" %("12341231")
-            content = "inline; filename='%s'" %(filename)
+            filename = "question_%s.pdf" % ("12341231")
+            content = "inline; filename='%s'" % (filename)
             download = request.GET.get("download")
             if download:
-                content = "attachment; filename='%s'" %(filename)
+                content = "attachment; filename='%s'" % (filename)
             response['Content-Disposition'] = content
             return response
         return HttpResponse("Not found")
-
-

@@ -23,7 +23,9 @@
                 <td>{{item.semester}}</td>
                 <td>{{item.course}}</td>
                 {% if item.user.email %}
-                <td><a href="{% url 'teachers-admin-view' item.user.email %}">{{item.user.email|teacher_name}}</a></td>
+                <td>
+                    <a href="{% url 'teachers-admin-view' item.user.email %}">
+                        {{item.user.email|teacher_name}}</a></td>
                 {%else%}
                 <td>{{item.user.email}}</td>
                 {% endif %}

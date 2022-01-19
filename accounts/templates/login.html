@@ -1,4 +1,5 @@
-{% extends 'AppBase.html' %} {% block appbaseContent %} {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
+{% extends 'AppBase.html' %} {% block appbaseContent %}
+ {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
 <div class="alert alert-danger">{{ message }}</div>
 {% else %}
 <div class="alert alert-{{ message.tags }}">{{ message }}</div>

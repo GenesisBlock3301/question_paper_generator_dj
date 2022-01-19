@@ -22,7 +22,7 @@
                                     </div>
                                     <h4 class="text-success" style="color:black">{{ teacher.name }}</h4>
                                     {% if request.user.is_teacher %}
-                                    <a class="btn btn-primary" href="{% url "update-profile" teacher.id %}">Edit</a>
+                                    <a class="btn btn-primary" href="{% url 'update-profile' teacher.id %}">Edit</a>
                                     {% endif %}
                                 </div>
                             </div>

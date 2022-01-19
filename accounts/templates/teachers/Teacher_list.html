@@ -16,11 +16,25 @@
                 <td>
                     <a href="{% url 'teachers-admin-view' item.user.email %}">{{item.name}}</a>
                 </td>
-                <td>{{ item.id_no }}</td>
+                <td>{{ item.user.id_no }}</td>
                 <td>{{ item.short_name }}</td>
                 <td>{{ item.faculty }}</td>
                 <td>{{ item.department }}</td>
                 <td>{{ item.designation }}</td>
+                <td>
+                    <a href="">
+                        <a href="{% url 'make_admin' item.id %}">
+                            <button id="ok" data-id={{item.id}} type="button" class="btn btn-info">
+                                <i class="icon-ok"></i>
+                                {% if item.user.is_staff %}
+                                Remove Admin
+                                {%else%}
+                                Make Admin
+                                {%endif%}
+                        </button>
+                        </a>
+                    </a>
+                </td>
                 </tr>
             {%endfor%}
         </tbody>
