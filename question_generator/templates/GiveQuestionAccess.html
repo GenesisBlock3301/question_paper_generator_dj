@@ -1,0 +1,49 @@
+{% extends 'AppBase.html' %} {% block appbaseContent %} {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
+<div class="alert alert-danger">{{ message }}</div>
+{% else %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endif %} {% endfor %} {% endif %}
+<section class="vh-80" style="background-color: #eee;">
+    <div class="container">
+        <div style="margin-top:25px" class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black" style="border-radius: 25px;">
+                    <div class="card-body p-md-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-12 col-lg-12 col-xl-12 order-2 order-lg-1">
+                                <p class="text-center fw-bold">Give Create Question Access</p>
+                                <form class="mx-1 mx-md-12" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12 col-xl-12 d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <select name="course_name" class="form-select" aria-label="Default select example">
+                                                    <option selected>Select course</option>
+                                                    {% for item in courses%}
+                                                    <option value={{item.id}}>{{item.course_title}}</option>
+                                                    {%endfor%}
+                                                  </select>
+                                                  <input type="hidden"  name="u_id" value={{u_id}}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="d-flex justify-content-center">
+                                        <input type="submit" class="btn btn-primary" value="Assign" />
+                                    </div>
+                                   
+                                </form>
+
+                            </div>
+            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+{% endblock %}

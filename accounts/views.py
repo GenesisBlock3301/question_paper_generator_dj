@@ -225,11 +225,16 @@ class TeacherProfileShowAdmin(View):
         approve = Question.objects.filter(
             user__email=email, approve=True).count()
         all_count = Question.objects.filter(user__email=email).count()
+        rate = 0
+        try:
+            rate = (approve * 100) / all_count
+        except:
+            rate = 0
         context = {
             'teacher': Profile.objects.filter(user__email=email).first(),
             'approve_quesion': approve,
             'not_approve': Question.objects.filter(user__email=email, approve=False).count(),
-            'success_rate': (approve * 100) / all_count
+            'success_rate': rate
         }
         return render(request, "profile/Profile.html", context)
 

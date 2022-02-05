@@ -21,6 +21,9 @@
                                         {% endif %}
                                     </div>
                                     <h4 class="text-success" style="color:black">{{ teacher.name }}</h4>
+                                    {% if request.user.is_staff %}
+                                    <a href="{% url 'create-course-access' teacher.id %}">Give course access to create question</a>
+                                    {% endif %}
                                     {% if request.user.is_teacher %}
                                     <a class="btn btn-primary" href="{% url 'update-profile' teacher.id %}">Edit</a>
                                     {% endif %}
@@ -67,6 +70,13 @@
                                         <div class="col-sm-6">
                                             <h4 class="text-muted f-w-400 text-success">Designation </h4>
                                             <p class="m-b-10 f-w-600">{{ teacher.designation }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        
+                                        <div class="col-sm-12">
+                                            <h4 class="text-muted f-w-400 text-success">Access to create question </h4>
+                                            <p class="m-b-10 f-w-600">{{ teacher.course_question }}</p>
                                         </div>
                                     </div>
 

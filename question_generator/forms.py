@@ -1,5 +1,5 @@
 from django import forms
-from . models import Department, Faculty, Question, Course
+from . models import Department, Faculty, Profile, Question, Course
 from ckeditor.widgets import CKEditorWidget
 
 DIFFICULTY = [
@@ -14,13 +14,16 @@ TERM_NAME = [
 ]
 
 MARKS = [
-    ('100',100),
-    ('40',40),
-    ('15',15)
+    ('100', 100),
+    ('40', 40),
+    ('15', 15)
 ]
+
+
 class CreationQuestionForm(forms.ModelForm):
     faculty = forms.CharField(widget=forms.Select(
-        attrs={'class': 'form-select form-select-lg mb-3',"placeholder":"Faculty"},
+        attrs={'class': 'form-select form-select-lg mb-3',
+               "placeholder": "Faculty"},
         choices=Faculty.objects.all().values_list('faculty_name', 'faculty_name'))
     )
     term_name = forms.CharField(
@@ -71,4 +74,17 @@ class CreationQuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ("faculty", "full_mark", "course", "department", "difficulty_level", "body")
+        fields = ("faculty", "full_mark", "course",
+                  "department", "difficulty_level", "body")
+
+
+class CreateQuestionAccessForm(forms.ModelForm):
+    course_list = forms.CharField(widget=forms.Select(
+        attrs={'class': 'form-select form-select-lg mb-3',
+               "placeholder": "Course"},
+        choices=Course.objects.all().values_list('course_title', 'course_title'))
+    )
+
+    class Meta:
+        model = Profile
+        fields = "__all__"

@@ -77,6 +77,7 @@ class Profile(models.Model):
     department = models.CharField(max_length=255, blank=True, null=True)
     role = models.CharField(max_length=255, blank=True, null=True)
     designation = models.CharField(max_length=255, blank=True, null=True)
+    course_question = models.CharField(max_length=255,default='', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.user.is_teacher:

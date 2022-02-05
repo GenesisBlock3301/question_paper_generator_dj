@@ -24,5 +24,7 @@ urlpatterns = [
          views.CourseQuestionView.as_view(), name="course-question"),
     path('question-generate/<pk>/', views.GenerateQuestion.as_view(),
          name='question-generate'),
+    path('create-course-access/<id>/', views.GiveCourseAccessToCreateQuestion.as_view(),
+         name='create-course-access'),
 
 ]

@@ -1,17 +1,14 @@
-from django import forms, views
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from accounts.models import User
-from question_generator.models import Department, Faculty, Question, Course
-from .forms import CreationQuestionForm
-from django.views.generic.edit import UpdateView
+from question_generator.models import Department, Faculty, Profile, Question, Course
+from .forms import CreationQuestionForm, CreateQuestionAccessForm
 from django.forms.models import model_to_dict
 from django.utils.decorators import method_decorator
 from .decorators import teacher_required, admin_required
 from django.views.generic.edit import DeleteView
 from django.contrib import messages
-from django.http import JsonResponse
 from .utility import render_to_pdf
 
 
@@ -112,6 +109,32 @@ class CourseQuestionView(View):
         return render(request, 'Course/Course_Question.html', context=context)
 
 
+class GiveCourseAccessToCreateQuestion(View):
+    @method_decorator(admin_required)
+    def get(self, request, id):
+        teacher = Profile.objects.filter(id=id).first()
+        department = Department.objects.filter(
+            department_name=teacher.department).first()
+        courses = Course.objects.filter(
+            department__department_name=department.department_name)
+        return render(request, "GiveQuestionAccess.html", {"courses": courses, "u_id": id})
+
+    def post(self, request, id):
+        course_id = request.POST.get('course_name')
+        course = Course.objects.filter(
+            id=course_id).first()
+        profile = Profile.objects.filter(
+            id=request.POST.get('u_id', None)).first()
+        if profile:
+            profile.course_question = course.course_title
+            profile.save()
+            messages.success(request, "Successfully ")
+            return redirect("teacher-profile")
+        else:
+            messages.error(request, "Profile not exists")
+            return redirect("create-course-access")
+
+
 class CreateQuestion(View):
     # method_decorator()
     def get(self, request):
@@ -131,6 +154,11 @@ class CreateQuestion(View):
         course = request.POST.get("course", None)
         limit = Question.objects.filter(
             user=request.user, approve=True).count()
+        profile = Profile.objects.filter(user=request.user).first()
+        if profile.course_question != course:
+            messages.error(
+                request, "You have not permission to create this course question")
+            return redirect("create-question")
         if limit <= 10:
             question = Question.objects.create(
                 user=request.user,
